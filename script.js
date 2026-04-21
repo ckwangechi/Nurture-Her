@@ -1,27 +1,24 @@
+// API
 const API_KEY = '4ab087f9bac0452bb58b22e2bd98b618' ;
 const API_URL = 'https://api.spoonacular.com/recipes/complexSearch';
 
 // Phases
 let PHASES = {};
-let phaseDataLoaded = false;
 
+// Load phase data from JSON
 async function loadPhases() {
-  if (phaseDataLoaded) return;
-  try {
     const res = await fetch('./data/phases.json');
+    if (!res.ok) throw new Error('Could not load phase data.');
     PHASES = await res.json();
-    phaseDataLoaded = true;
-  } catch (err) {
-    console.error('Failed to load phase data:', err);
-    alert('Failed to load phase information. Please try again later.');
-  }
 }
 
 // Initialize app
 async function init() {
   await loadPhases();
 }
-init();
+init().then(() => {
+    console.log("App ready. Phases loaded:", PHASES);
+});
 
 // State
 const state = { phase: null, diet: '', loading: false };
@@ -53,8 +50,6 @@ function selectPhase(phase) {
   document.body.dataset.phase = phase;
 
   const p = PHASES[phase];
-  if (!p) return;
-
   insight.innerHTML = `
     <p class="insight-label">${p.label}</p>
     <p class="insight-text">${p.insight}</p>
@@ -68,45 +63,77 @@ console.log("Selected phase:", phase);
 console.log("Phase data:", PHASES[phase]);
 }
 
+// Fetch recipes for a single ingredient query
+async function fetchForIngredient(ingredient,diet) {
+    const params = new URLSearchParams({
+        apiKey: API_KEY,
+        query: ingredient.trim(),
+        number: 3,
+        addRecipeInformation: false,
+    });
+    if (diet) params.set('diet', diet);
+
+    const res = await fetch(`${API_URL}?${params}`);
+    const data = await res.json();
+
+    if (!res.ok || data.status === 'failure') {
+        if (res.status === 401 || res.status === 403) throw new Error('API key is invalid or has exceeded its quota.');
+        if (res.status === 429) throw new Error('API rate limit exceeded. Please try again later.');
+        throw new Error(`API error: ${data.message || res.statusText}`);
+    }
+
+    return data.results || [];
+}
+
 // Fetch and render recipes
 async function fetchRecipes() {
   if (state.loading) return;
   state.loading = true;
+  btnSearch.disabled = true;
 
   panel.hidden = false;
   show('loading');
   panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  btnSearch.disabled = true;
-
+  
   const p = PHASES[state.phase];
+  
   const params = new URLSearchParams({
-    apiKey: API_KEY,
-    query: p.query,
-    // includeIngredients: p.ingredients,
-    number: 12,
-    // addRecipeInformation: false,
+      apiKey: API_KEY,
+      query: p.query,
+      number: 10,
+      addRecipeInformation: true
   });
-  if (state.diet) params.set('diet', state.diet);
+
+  if (state.diet && state.diet !== '') {
+    params.set('diet', state.diet);
+  }
 
   try {
-    const res  = await fetch(`${API_URL}?${params}`);
+    const res = await fetch(`${API_URL}?${params.toString()}`);
     if (!res.ok) throw new Error(`Error ${res.status}`);
+    
     const data = await res.json();
 
-    if (!data.results?.length) { show('empty'); return; }
+    if (!data.results || data.results.length === 0) { 
+      show('empty'); 
+      return; 
+    }
 
     grid.innerHTML = '';
-    data.results.forEach(r => grid.appendChild(makeCard(r, p.badge)));
+    data.results.forEach(recipe => {
+      grid.appendChild(makeCard(recipe, p.label)); 
+    });
     show('grid');
 
   } catch (err) {
-    errorMsg.textContent = err.message || 'Something went wrong. Please try again.';
+    console.error(err);
+    errorMsg.textContent = err.message || 'Something went wrong.';
     show('error');
   } finally {
     state.loading = false;
     btnSearch.disabled = false;
   }
-}
+} 
 
 // Show one result state at a time
 function show(view) {
