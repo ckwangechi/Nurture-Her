@@ -1,5 +1,5 @@
 # Nurture Her
-A simple, beautiful web app that recommends recipes based on the four phases of the menstrual cycle.
+A simple web app that recommends recipes based on the four phases of the menstrual cycle.
 
 ## Setup
 
