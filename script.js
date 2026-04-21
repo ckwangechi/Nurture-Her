@@ -1,36 +1,15 @@
-const API_KEY = 4ab087f9bac0452bb58b22e2bd98b618 ;
+const API_KEY = '4ab087f9bac0452bb58b22e2bd98b618' ;
 const API_URL = 'https://api.spoonacular.com/recipes/complexSearch';
 
-const PHASES = {
-  menstrual: {
-    query: 'iron rich',
-    ingredients: 'spinach,lentils,kidney beans,beef,broccoli,pumpkin seeds',
-    insight: 'Your body needs iron and Vitamin C right now. Focus on iron-dense whole foods and bright vegetables to restore energy.',
-    badge: 'High in Iron & Vitamin C',
-    label: 'Menstrual Phase',
-  },
-  follicular: {
-    query: 'light fresh',
-    ingredients: 'avocado,yogurt,kimchi,eggs,salmon,seeds',
-    insight: 'Rising estrogen calls for gut-friendly probiotics and healthy fats to fuel your growing energy and lift your mood.',
-    badge: 'Probiotics & Healthy Fats',
-    label: 'Follicular Phase',
-  },
-  ovulatory: {
-    query: 'anti inflammatory',
-    ingredients: 'berries,quinoa,broccoli,blueberries,kale,turmeric',
-    insight: 'Support ovulation with fibre-rich and anti-inflammatory foods that reduce bloating and keep inflammation low.',
-    badge: 'Fibre & Anti-Inflammatory',
-    label: 'Ovulatory Phase',
-  },
-  luteal: {
-    query: 'complex carbs',
-    ingredients: 'sweet potato,dark chocolate,pumpkin seeds,oats,bananas,chickpeas',
-    insight: 'Magnesium-rich foods ease PMS symptoms while complex carbohydrates stabilise mood and sustain your energy levels.',
-    badge: 'Magnesium & Complex Carbs',
-    label: 'Luteal Phase',
-  },
-};
+// Phases
+let PHASES = {};
+
+async function loadPhases() {
+  const res = await fetch('./phases.json');
+  PHASES = await res.json();
+}
+
+loadPhases();
 
 // State
 const state = { phase: null, diet: '', loading: false };
@@ -61,11 +40,14 @@ function selectPhase(phase) {
 
   document.body.dataset.phase = phase;
 
+    loadPhases().then(() => {
+
   const p = PHASES[phase];
   insight.innerHTML = `
     <p class="insight-label">${p.label}</p>
     <p class="insight-text">${p.insight}</p>
   `;
+  });
 
   filterBar.hidden = false;
   panel.hidden = true;
