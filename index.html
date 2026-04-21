@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nurture Her</title>
+</head>
+<body>
+    
+      <header>
+    <h1>Nurture Her</h1>
+    <p>Eat in sync with your cycle</p>
+  </header>
+
+  <main>
+
+    <section class="phase-section">
+      <h2>What phase are you in?</h2>
+      <p class="subtitle">Choose your current phase to find recipes that support your body right now.</p>
+
+      <div class="phase-grid" role="tablist">
+
+        <button class="phase-card" data-phase="menstrual" role="tab" aria-selected="false">
+          <span class="phase-name">Menstrual</span>
+          <span class="phase-days">Days 1 – 5</span>
+          <span class="phase-focus">Iron &amp; Vitamin C</span>
+        </button>
+
+        <button class="phase-card" data-phase="follicular" role="tab" aria-selected="false">
+          <span class="phase-name">Follicular</span>
+          <span class="phase-days">Days 6 – 13</span>
+          <span class="phase-focus">Probiotics &amp; Healthy Fats</span>
+        </button>
+
+        <button class="phase-card" data-phase="ovulatory" role="tab" aria-selected="false">
+          <span class="phase-name">Ovulatory</span>
+          <span class="phase-days">Days 14 – 17</span>
+          <span class="phase-focus">Fiber &amp; Anti-Inflammatory</span>
+        </button>
+
+        <button class="phase-card" data-phase="luteal" role="tab" aria-selected="false">
+          <span class="phase-name">Luteal</span>
+          <span class="phase-days">Days 18 – 28</span>
+          <span class="phase-focus">Magnesium &amp; Complex Carbs</span>
+        </button>
+
+      </div>
+    </section>
+
+    <section id="filter-bar" hidden>
+      <div id="phase-insight"></div>
+      <div class="filter-row">
+        <label for="diet-select">Diet</label>
+        <select id="diet-select">
+          <option value="">All</option>
+          <option value="vegan">Vegan</option>
+          <option value="vegetarian">Vegetarian</option>
+          <option value="paleo">Paleo</option>
+          <option value="gluten free">Gluten-Free</option>
+        </select>
+        <button id="btn-search">Find Recipes</button>
+      </div>
+    </section>
+
+    <section id="recipes-panel" hidden>
+      <div id="loading-state" hidden>
+        <div class="spinner"></div>
+        <p>Finding recipes for you…</p>
+      </div>
+      <div id="empty-state" hidden>
+        <p>No recipes found. Try a different filter.</p>
+      </div>
+      <div id="error-state" hidden>
+        <p id="error-message">Something went wrong. Please try again.</p>
+        <button id="btn-retry">Retry</button>
+      </div>
+      <div id="recipe-grid"></div>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>Recipes from <a href="https://spoonacular.com" target="_blank" rel="noopener">Spoonacular</a></p>
+  </footer>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
