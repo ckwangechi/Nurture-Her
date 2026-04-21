@@ -3,13 +3,25 @@ const API_URL = 'https://api.spoonacular.com/recipes/complexSearch';
 
 // Phases
 let PHASES = {};
+let phaseDataLoaded = false;
 
 async function loadPhases() {
-  const res = await fetch('./phases.json');
-  PHASES = await res.json();
+  if (phaseDataLoaded) return;
+  try {
+    const res = await fetch('./data/phases.json');
+    PHASES = await res.json();
+    phaseDataLoaded = true;
+  } catch (err) {
+    console.error('Failed to load phase data:', err);
+    alert('Failed to load phase information. Please try again later.');
+  }
 }
 
-loadPhases();
+// Initialize app
+async function init() {
+  await loadPhases();
+}
+init();
 
 // State
 const state = { phase: null, diet: '', loading: false };
@@ -40,18 +52,20 @@ function selectPhase(phase) {
 
   document.body.dataset.phase = phase;
 
-    loadPhases().then(() => {
-
   const p = PHASES[phase];
+  if (!p) return;
+
   insight.innerHTML = `
     <p class="insight-label">${p.label}</p>
     <p class="insight-text">${p.insight}</p>
   `;
-  });
 
   filterBar.hidden = false;
   panel.hidden = true;
   grid.innerHTML = '';
+
+console.log("Selected phase:", phase);
+console.log("Phase data:", PHASES[phase]);
 }
 
 // Fetch and render recipes
