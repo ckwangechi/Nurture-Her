@@ -4,8 +4,8 @@ A simple, beautiful web app that recommends recipes based on the four phases of 
 ## Setup
 
 1. Get a free API key at [spoonacular.com/food-api](https://spoonacular.com/food-api)
-2. Open `script.js` and replace `YOUR_SPOONACULAR_API_KEY` with your key
-3. Open `index.html` in a browser — no build step needed
+2. Open `script.js` and replace the API_KEY with your key
+3. Open `index.html` in a browser
 
 ## Files
 
