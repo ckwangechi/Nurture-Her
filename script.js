@@ -82,9 +82,9 @@ async function fetchRecipes() {
   const params = new URLSearchParams({
     apiKey: API_KEY,
     query: p.query,
-    includeIngredients: p.ingredients,
+    // includeIngredients: p.ingredients,
     number: 12,
-    addRecipeInformation: false,
+    // addRecipeInformation: false,
   });
   if (state.diet) params.set('diet', state.diet);
 
